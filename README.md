@@ -45,7 +45,6 @@ The driver needs yaml configuration to work. Set your config file path to koha_c
     user: foo
     passwd: baa
     baseUrl: https://providerurl.service
-    clientId: foobaa
     sourceName: foofoo
     requestEncoding: UTF-8
     unicode: no
