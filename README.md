@@ -44,8 +44,11 @@ The driver needs yaml configuration to work. Set your config file path to koha_c
 
     user: foo
     passwd: baa
-    baseUrl: https://url.fi
-    appId: foobaa
-    callbackUrl: https://mykohaurl.fi/api/delivery
+    baseUrl: https://providerurl.service
+    clientId: foobaa
+    sourceName: foofoo
+    requestEncoding: UTF-8
+    unicode: no
+    reportUrl: https://mykohaurl.fi/api/delivery
 
 Set the LinkMobility::Driver to SMSSendDriver systempreference and enjoy.
