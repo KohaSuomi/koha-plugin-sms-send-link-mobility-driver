@@ -28,13 +28,13 @@ use Koha::Notice::Messages;
 sub set {
     my $c = shift->openapi->valid_input or return;
 
-    my $message_id = $c->validation->param('message_id');
+    my $notice_id = $c->validation->param('notice_id');
     my $status = $c->validation->param('status');
     my $delivery_note = $c->validation->param('message');
     my $notice;
 
     return try {
-        $notice = Koha::Notice::Messages->find($message_id);
+        $notice = Koha::Notice::Messages->find($notice_id);
 
         if ($status eq "ERROR") {
             # Delivery was failed. Set notice status to failed and add delivery
