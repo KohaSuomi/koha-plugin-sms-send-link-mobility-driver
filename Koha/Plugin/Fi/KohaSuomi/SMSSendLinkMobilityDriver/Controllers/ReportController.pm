@@ -19,12 +19,13 @@ use Modern::Perl;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Try::Tiny;
+use Koha::Notice::Messages;
 
 =head1 API
 
 =cut
 
-sub update {
+sub set {
     my $c = shift->openapi->valid_input or return;
 
     my $message_id = $c->validation->param('message_id');

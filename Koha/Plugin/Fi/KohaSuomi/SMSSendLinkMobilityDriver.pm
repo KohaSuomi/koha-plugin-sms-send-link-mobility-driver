@@ -43,6 +43,34 @@ sub new {
     return $self;
 }
 
+## This is the 'install' method. Any database tables or other setup that should
+## be done when the plugin if first installed should be executed in this method.
+## The installation method should always return true if the installation succeeded
+## or false if it failed.
+sub install() {
+    my ( $self, $args ) = @_;
+
+    return 1;
+}
+
+## This is the 'upgrade' method. It will be triggered when a newer version of a
+## plugin is installed over an existing older version of a plugin
+sub upgrade {
+    my ( $self, $args ) = @_;
+
+    return 1;
+}
+
+## This method will be run just before the plugin files are deleted
+## when a plugin is uninstalled. It is good practice to clean up
+## after ourselves!
+sub uninstall() {
+    my ( $self, $args ) = @_;
+
+    return 1;
+
+}
+
 sub api_routes {
     my ( $self, $args ) = @_;
 

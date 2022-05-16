@@ -1,7 +1,7 @@
 {
   "/notices/{notice_id}/report/linkmobility": {
-    "put": {
-      "x-mojo-to": "Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::ReportController#update",
+    "post": {
+      "x-mojo-to": "Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::ReportController#set",
       "operationId": "updateLinkMobility",
       "tags": [
         "Notices"
