@@ -1,0 +1,63 @@
+{
+  "/notices/{notice_id}/report/linkmobility": {
+    "put": {
+      "x-mojo-to": "Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::ReportController#update",
+      "operationId": "updateLinkMobility",
+      "tags": [
+        "Notices"
+      ],
+      "parameters": [
+        {
+          "name": "notice_id",
+          "in": "path",
+          "description": "Identifier",
+          "required": true,
+          "type": "integer"
+        },
+        {
+          "name": "status",
+          "in": "formData",
+          "type": "string",
+          "description": "Status of the delivery",
+          "required": true
+        },
+        {
+          "name": "message",
+          "in": "formData",
+          "type": "string",
+          "description": "Delivery notes",
+          "required": true
+        }
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "responses": {
+        "200": {
+          "description": "Response for receiving the report.",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "404": {
+          "description": "An error occured",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "description": "Notice not found",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
