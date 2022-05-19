@@ -85,11 +85,38 @@ sub hdiacritic {
   return $retstring;
 }
 
+sub _get_login {
+    my ($username, $password, $message_id) = @_;
+
+    if (ref($username) eq "HASH" && ref($password) eq "HASH") {
+        my $notice = Koha::Notice::Messages->find($message_id);
+        my $library = Koha::Libraries->find({branchemail => $notice->{from_address}});
+        my %usernames = %{$username};
+        my %passwords = %{$password};
+        foreach $key (keys %usernames) {
+            if ($key eq $library->branchcode) {
+                $username = $usernames{$key};
+                last;
+            }
+        }
+        foreach $key (keys %$passwords) {
+            if ($key eq $library->branchcode) {
+                $password = $passwords{$key};
+                last;
+            }
+        }
+    }
+
+    return $username, $password;
+}
+
 sub send_sms {
     my $self    = shift;
     my $params = {@_};
     my $message = $params->{text};
     my $recipientNumber = $params->{to};
+
+    my ($username, $password) = _get_login($self->{_login}, $self->{_password}, $params->{_message_id});
 
     if (! defined $message ) {
         warn "->send_sms(text) must be defined!";
@@ -106,8 +133,8 @@ sub send_sms {
 
     my $base_url = $self->{_baseUrl};
     my $parameters = {
-        'user'      => $self->{_login},
-        'password'  => $self->{_password},
+        'user'      => $username,
+        'password'  => $password,
         'dests'     => $recipientNumber,
     };
 
