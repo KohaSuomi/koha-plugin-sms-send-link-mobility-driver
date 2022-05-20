@@ -90,7 +90,7 @@ sub _get_login {
 
     if (ref($username) eq "HASH" && ref($password) eq "HASH") {
         my $notice = Koha::Notice::Messages->find($message_id);
-        my $library = Koha::Libraries->find({branchemail => $notice->{from_address}});
+        my $library = Koha::Libraries->find({branchemail => $notice->from_address});
         my %usernames = %{$username};
         my %passwords = %{$password};
         foreach $key (keys %usernames) {
