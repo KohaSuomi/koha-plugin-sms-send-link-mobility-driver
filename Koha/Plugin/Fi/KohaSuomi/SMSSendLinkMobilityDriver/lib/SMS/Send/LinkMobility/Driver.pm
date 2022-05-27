@@ -7,6 +7,7 @@ use C4::Context;
 use Encode;
 use Unicode::Normalize;
 use Koha::Notice::Messages;
+use UUID;
 
 use Try::Tiny;
 
@@ -56,6 +57,7 @@ sub new {
         $self->{_unicode} = $params->{_unicode};
         $self->{_reportUrl} = $params->{_reportUrl};
         $self->{_sourceName} = $params->{_sourceName};
+        $self->{_secret} = $params->{_secret};
 
         return $self;
 }
@@ -166,10 +168,17 @@ sub send_sms {
     my $report_url = $self->{_reportUrl};
     if ($report_url) {
         my $msg_id = $params->{_message_id};
-        $report_url =~ s/\{message_id\}|\{messagenumber\}/$msg_id/g;
+        my ( $uuid, $uuidstring );
+        UUID::generate($uuid);
+        UUID::unparse( $uuid, $uuidstring );
+        my @params = ($uuidstring, $msg_id);
+        my $dbh = C4::Context->dbh;
+        my $sth = $dbh->prepare("INSERT INTO kohasuomi_sms_token (token,message_id) VALUES (?,?);");
+        $sth->execute(@params);
+        $report_url =~ s/\{token\}|\{messagenumber\}/$uuidstring/g;
         $parameters->{'report'} = $report_url;
     }
-
+    
     my $lwpcurl = LWP::Curl->new();
     my $return;
     try {

@@ -50,7 +50,15 @@ sub new {
 sub install() {
     my ( $self, $args ) = @_;
 
-    return 1;
+    my $dbh = C4::Context->dbh;
+
+    $dbh->do("CREATE TABLE IF NOT EXISTS `kohasuomi_sms_token` (
+        `token` varchar(150) NOT NULL,
+        `message_id` int(11) NOT NULL,
+        `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY `token` (`token`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
 }
 
 ## This is the 'upgrade' method. It will be triggered when a newer version of a

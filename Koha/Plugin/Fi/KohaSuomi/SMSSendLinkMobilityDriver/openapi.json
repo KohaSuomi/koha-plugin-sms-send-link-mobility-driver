@@ -1,5 +1,5 @@
 {
-  "/notices/{notice_id}/report/linkmobility": {
+  "/notices/{token}/report/linkmobility": {
     "post": {
       "x-mojo-to": "Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::ReportController#set",
       "operationId": "updateLinkMobility",
@@ -8,11 +8,11 @@
       ],
       "parameters": [
         {
-          "name": "notice_id",
+          "name": "token",
           "in": "path",
           "description": "Identifier",
           "required": true,
-          "type": "integer"
+          "type": "string"
         },
         {
           "name": "status",
@@ -37,6 +37,12 @@
           "description": "Response for receiving the report.",
           "schema": {
             "type": "string"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
           }
         },
         "404": {

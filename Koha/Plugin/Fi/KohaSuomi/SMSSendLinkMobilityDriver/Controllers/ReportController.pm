@@ -20,6 +20,8 @@ use Modern::Perl;
 use Mojo::Base 'Mojolicious::Controller';
 use Try::Tiny;
 use Koha::Notice::Messages;
+use C4::Context;
+use UUID;
 
 =head1 API
 
@@ -28,12 +30,16 @@ use Koha::Notice::Messages;
 sub set {
     my $c = shift->openapi->valid_input or return;
 
-    my $notice_id = $c->validation->param('notice_id');
+    my $token = $c->validation->param('token');
     my $status = $c->validation->param('status');
     my $delivery_note = $c->validation->param('message');
     my $notice;
-
+    my $dbh = C4::Context->dbh;
     return try {
+        my $sth = $dbh->prepare("SELECT message_id FROM kohasuomi_sms_token WHERE token = ?;");
+        $sth->execute($token);
+        my $notice_id = $sth->fetchrow;
+        
         $notice = Koha::Notice::Messages->find($notice_id);
 
         if ($status eq "ERROR") {
@@ -41,19 +47,19 @@ sub set {
             # note provided by Labyrintti.
             $notice->set({
                 status        => 'failed',
-                delivery_note => $delivery_note,
+                failure_code => $delivery_note,
             })->store;
         }
+        $sth = $dbh->prepare("DELETE FROM kohasuomi_sms_token WHERE message_id = ?;");
+        $sth->execute($notice_id);
         return $c->render(status => 200, openapi => "");
     }
     catch {
         unless ($notice) {
             return $c->render( status  => 404,
                                openapi => { error => "Notice not found" } );
-        } else {
-            return $c->render( status  => 500,
-                               openapi => { error => "Something went wrong, check the logs!" } );
         }
+        return $c->render( status  => 500, openapi => { error => "Something went wrong, check the logs!" } );
     };
 }
 
