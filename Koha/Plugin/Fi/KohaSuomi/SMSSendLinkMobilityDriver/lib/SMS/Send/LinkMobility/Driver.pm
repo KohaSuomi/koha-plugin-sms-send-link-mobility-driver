@@ -57,7 +57,6 @@ sub new {
         $self->{_unicode} = $params->{_unicode};
         $self->{_reportUrl} = $params->{_reportUrl};
         $self->{_sourceName} = $params->{_sourceName};
-        $self->{_secret} = $params->{_secret};
 
         return $self;
 }
