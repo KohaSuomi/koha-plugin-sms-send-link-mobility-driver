@@ -5,9 +5,10 @@ use LWP::Curl;
 use URI::Escape;
 use C4::Context;
 use Encode;
-use Unicode::Normalize;
+use Text::Unaccent;
 use Koha::Notice::Messages;
 use UUID;
+use utf8;
 
 use Try::Tiny;
 
@@ -62,28 +63,25 @@ sub new {
 }
 
 sub hdiacritic {
-  my $char;
-  my $oldchar;
-  my $retstring;
+    my $char;
+    my $oldchar;
+    my $string;
 
-  foreach (split(//, $_[0])) {
-    $char=$_;
-    $oldchar=$char;
-
-    unless ( $char =~/[A-Za-z0-9ÅåÄäÖöÉéÈèÌìÍíÓóÒòÔôÎîÇçÆæÏïÜüÐðØøÞþßÕõÑñÛûÂâÊêËëÃãÝýÀàÁáÂâÚúÙùÿ]/ ) {
-
-      $char='Z'  if $char eq 'Ʒ';
-      $char='z'  if $char eq 'ʒ';
-      $char='Ð'  if $char eq 'Ɖ';
-      $char='Ð'  if $char eq 'Đ'; # This is not the same as above, so don't remove either one!
-      $char='\'' if $char eq 'ʻ';
-
-      $char=NFKD($char) if "$oldchar" eq "$char";
+    foreach ( split( //, $_[0] ) ) {
+        $char    = $_;
+        $oldchar = $char;
+        unless ( $char =~ /[A-Za-z0-9ÅåÄäÖöÉéÜüÁá]/ ) {
+            $char = 'Z'  if $char eq 'Ʒ';
+            $char = 'z'  if $char eq 'ʒ';
+            $char = 'B'  if $char eq 'ß';
+            $char = '\'' if $char eq 'ʻ';
+            $char = 'e'  if $char eq '€';
+            $char = unac_string( 'utf-8', $char ) if "$oldchar" eq "$char";
+        }
+        $string .= $char;
     }
-    $retstring=$retstring . $char;
-  }
 
-  return $retstring;
+    return $string;
 }
 
 sub _get_login {
