@@ -12,14 +12,14 @@ use utf8;
 use JSON;
 
 ## Here we set our plugin version
-our $VERSION = "1.0";
+our $VERSION = "2.0";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
     name            => 'SMS::Send::LinkMobility::Driver',
     author          => 'Johanna Räisä',
     date_authored   => '2021-08-27',
-    date_updated    => "2022-05-16",
+    date_updated    => "2025-02-04",
     minimum_version => '17.05.00.000',
     maximum_version => undef,
     version         => $VERSION,
