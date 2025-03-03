@@ -89,6 +89,32 @@ my $app = sub {
         ];
     }
 
+    if ($req->path eq '/notices/callback/linkmobility' && $req->method eq 'POST') {
+        if (!_check_api_key($req)) {
+            return [
+                401,
+                ['Content-Type' => 'text/plain'],
+                ['Unauthorized'],
+            ];
+        }
+        my $body = decode_json($req->content);
+        if (!_validate_callback($body)) {
+            return [
+                400,
+                ['Content-Type' => 'text/plain'],
+                ['Bad Request'],
+            ];
+        }
+        my $response = {
+            status => 'success',
+        };
+        return [
+            200,
+            ['Content-Type' => 'application/json'],
+            [encode_json($response)],
+        ];
+    }
+
     return [
         404,
         ['Content-Type' => 'text/plain'],
@@ -108,8 +134,10 @@ sub _check_bearer_token {
 }
 
 sub _validate_body {
-    (my $body) = @_;
+    (my $req) = @_;
 
+    return 0 unless ref($req) eq 'ARRAY' && @$req;  # Validate body is a non-empty array
+    my $body = $req->[0]; # Get the first element of the array
     return 0 unless $body->{recipient} || $body->{content};  # Validate required fields
     return 0 if $body->{recipient} !~ /^\+358\d{9,10}$/;  # Validate recipient in MSISDN format
     return 0 if !$body->{content}->{text}; # Validate content text
@@ -117,6 +145,29 @@ sub _validate_body {
     return 0 if !$body->{content}->{options}->{'sms.sender'}; # Validate sender
     return 1;
 
+}
+
+sub _check_api_key {
+    (my $req) = @_;
+    
+    my $api_key = $headers->header('X-KOHA-LINK');
+    return 0 unless $api_key eq '1234567890';  # Validate API key
+    return 1;
+
+    
+
+sub _validate_callback {
+    (my $req) = @_;
+
+    return 0 unless $req->{channel} eq 'sms';  # Validate channel
+    return 0 unless $req->{recipient} =~ /^\+358\d{9,10}$/;  # Validate recipient in MSISDN format
+    return 0 unless $req->{status}->{code} == 0;  # Validate status code
+    return 1;
+
+}
+
+sub _get_api_key {
+    return '1234567890';
 }
 
 return $app;

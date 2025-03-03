@@ -102,8 +102,9 @@ sub _rest_call {
     } else {
         $tx = $ua->post($url => $headers => json => $params);
     }
+
     if ($tx->error) {
-        return ($tx->error, undef);
+        return ($tx->res->json, undef);
     } else {
         return (undef, $tx->res->json);
     }
@@ -119,6 +120,7 @@ sub send_sms {
     my $url = $self->{_baseUrl};
     my $authUrl = $self->{_authUrl};
     my $senderId = $self->{_senderId};
+    $senderId = "$senderId" if $senderId =~ /^\d+$/; #SenderId must be a string
     my $cacheKey = $self->{_cacheKey};
 
     if (! defined $message ) {
@@ -163,26 +165,21 @@ sub send_sms {
     my $reqparams = {
         recipient => $recipientNumber,
         content => {text => hdiacritic($message), options => {'sms.sender' => $senderId, 'sms.encoding' => 'AutoDetect', 'sms.obfuscate' => 'ContentAndRecipient'} },
-        priority => 'Normal',
-        referenceId => $params->{_message_id}
+        priority => 'Normal'
+        callback => {mode => 'Profile'}
     };
 
-    ## Not sure if this works with Link Mobility MyLink SMS API
-    my $report_url = $self->{_reportUrl};
-    if ($report_url) {
-        my $msg_id = $params->{_message_id};
-        my ( $uuid, $uuidstring );
-        UUID::generate($uuid);
-        UUID::unparse( $uuid, $uuidstring );
-        my @params = ($uuidstring, $msg_id);
-        my $dbh = C4::Context->dbh;
-        my $sth = $dbh->prepare("INSERT INTO kohasuomi_sms_token (token,message_id) VALUES (?,?);");
-        $sth->execute(@params);
-        $report_url =~ s/\{token\}|\{messagenumber\}/$uuidstring/g;
-        $reqparams->{callback} = {mode => 'URL', urls => [$report_url], gateId => $uuidstring};
+    if ($params->{_message_id}) {
+        $reqparams->{referenceId} = $params->{_message_id};
     }
 
-    ($error, $res) = _rest_call($url, $headers, undef, $reqparams);
+    ## Not sure if this works with Link Mobility MyLink SMS API
+    my $callbackURLs = $params->{_callbackURLs};
+    if ($callbackURLs) {
+        $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
+    }
+    
+    ($error, $res) = _rest_call($url, $headers, undef, [$reqparams]);
     
     if ($error) {
         die "Connection failed with: ". $error->{message};

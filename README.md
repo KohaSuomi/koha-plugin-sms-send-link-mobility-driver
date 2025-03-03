@@ -42,12 +42,16 @@ Go to your plugin installation path and build the driver.
 
 The driver needs yaml configuration to work. Set your config file path to koha_conf.xml and create LinkMobility/Driver.yaml to that path.
 
+```yaml
     client_id: foo
     client_secret: baa
     senderId: foobaa
     baseUrl: https://providerurl.service
     authUrl: https:://providerurl.service/auth/token
-    reportUrl: https://mykohaurl.fi/api/delivery
     cacheKey: foo_baa_key
+    callbackAPIKey: fooooBAAAA
+    callbackURLs: 
+        - https://foobaa.fi/api/v1/callback
+```
 
 Set the LinkMobility::Driver to SMSSendDriver systempreference and enjoy.
