@@ -4,10 +4,10 @@ use warnings FATAL => 'all';
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name                => 'SMS::Send::LinkMobility::Driver',
+    module_name                => 'SMS::Send::MyLink::Driver',
     dist_author                => q{Johanna Räisä <johanna.raisa@koha-suomi.fi>},
-    dist_version_from          => 'lib/SMS/Send/LinkMobility/Driver.pm',
-    dist_abstract              => 'A driver for sending SMS messages using Link Mobility',
+    dist_version_from          => 'lib/SMS/Send/MyLink/Driver.pm',
+    dist_abstract              => 'A driver for sending SMS messages using MyLink',
     release_status             => 'stable',
     configure_requires => {
         'Module::Build'        => 0,
@@ -24,7 +24,7 @@ my $builder = Module::Build->new(
         'Encode'               => 0,
         'Unicode::Normalize'   => 0,
     },
-    add_to_cleanup     => [ 'SMS-Send-LinkMobility-Driver-*' ],
+    add_to_cleanup     => [ 'SMS-Send-MyLink-Driver-*' ],
     create_makefile_pl => 'traditional',
 );
 

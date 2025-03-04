@@ -15,7 +15,7 @@ use Try::Tiny;
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-        $VERSION = '2.0';
+        $VERSION = '1.0';
         @ISA     = 'SMS::Send::Driver';
 }
 
