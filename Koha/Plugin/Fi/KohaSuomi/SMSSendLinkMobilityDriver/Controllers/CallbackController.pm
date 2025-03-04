@@ -21,8 +21,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Try::Tiny;
 use Koha::Notice::Messages;
 use C4::Context;
-use UUID;
-use SMS::Send::LinkMobility::Driver;
 
 =head1 API
 
@@ -62,7 +60,7 @@ sub delivery {
     # Check if the API key is correct
     my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
     my $api_key = _get_api_key();
-    if ($api_key && $api_key_header ne $api_key) {
+    if ($api_key && (!defined $api_key_header || $api_key_header ne $api_key)) {
         return $c->render(status => 401, openapi => { error => "Unauthorized" });
     }
 
@@ -75,7 +73,7 @@ sub delivery {
                                openapi => "" ) unless $notice;
             $notice->set({
                 status        => 'failed',
-                failure_code => $body->{status}->{details},
+                failure_code => $body->{status}->{type},
             })->store;
         }
 
@@ -91,8 +89,8 @@ sub delivery {
 sub _error {
     (my $status_code) = @_;
 
-    return 0 if $status_code > 2000;
-    return 1;
+    return 1 if $status_code > 2000;
+    return 0;
 }
 
 sub _get_api_key {
@@ -101,3 +99,5 @@ sub _get_api_key {
     my $config = YAML::LoadFile($config_file);
     return $config->{callbackAPIKey};
 }
+
+1;
