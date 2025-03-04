@@ -166,16 +166,18 @@ sub send_sms {
         recipient => $recipientNumber,
         content => {text => hdiacritic($message), options => {'sms.sender' => $senderId, 'sms.encoding' => 'AutoDetect', 'sms.obfuscate' => 'ContentAndRecipient'} },
         priority => 'Normal'
-        callback => {mode => 'Profile'}
+        callback => {mode => 'None'}
     };
 
     if ($params->{_message_id}) {
         $reqparams->{referenceId} = $params->{_message_id};
     }
 
-    ## Not sure if this works with Link Mobility MyLink SMS API
-    my $callbackURLs = $params->{_callbackURLs};
-    if ($callbackURLs) {
+    if ($params->{_callbackAPIKey}) {
+        $reqparams->{callback} = {mode => 'Profile'};
+    }
+
+    if ($params->{_callbackAPIKey} && $params->{_callbackURLs}) {
         $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
     }
     
