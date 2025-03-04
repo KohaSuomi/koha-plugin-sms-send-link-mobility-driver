@@ -2,6 +2,10 @@
 
 This plugin is for SMS::Send::LinkMobility::Driver
 
+# API documentation
+
+The API documentation can be found here https://developers.linkmobility.com/default/documentation/sms
+
 # Downloading
 
 From the release page you can download the latest \*.kpz file
