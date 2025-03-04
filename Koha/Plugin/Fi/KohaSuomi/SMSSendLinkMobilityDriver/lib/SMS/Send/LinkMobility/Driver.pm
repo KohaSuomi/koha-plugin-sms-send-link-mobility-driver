@@ -165,7 +165,7 @@ sub send_sms {
     my $reqparams = {
         recipient => $recipientNumber,
         content => {text => hdiacritic($message), options => {'sms.sender' => $senderId, 'sms.encoding' => 'AutoDetect', 'sms.obfuscate' => 'ContentAndRecipient'} },
-        priority => 'Normal'
+        priority => 'Normal',
         callback => {mode => 'None'}
     };
 
