@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use SMS::Send::LinkMobility::Driver;
+use SMS::Send::MyLink::Driver;
 use LWP::UserAgent;
 
 my $ua = LWP::UserAgent->new;
@@ -18,7 +18,7 @@ unless ($res->is_success) {
 }
 
 # Create an instance of the Driver
-my $driver = SMS::Send::LinkMobility::Driver->new(
+my $driver = SMS::Send::MyLink::Driver->new(
     _client_id => 'client_id',
     _client_secret => 'client_secret',
     _baseUrl => 'http://localhost:5001/sms/v1/messages',
@@ -28,7 +28,7 @@ my $driver = SMS::Send::LinkMobility::Driver->new(
 is($driver, undef, 'Missing required parameters');
 
 # Create an instance of the Driver
-$driver = SMS::Send::LinkMobility::Driver->new(
+$driver = SMS::Send::MyLink::Driver->new(
     _client_id => 'client_id',
     _client_secret => 'client_secret',
     _baseUrl => 'http://localhost:5001/sms/v1/messages',

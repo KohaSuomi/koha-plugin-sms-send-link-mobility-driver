@@ -16,7 +16,7 @@ use t::lib::TestBuilder;
 my $t = Test::Mojo->new('Koha::REST::V1');
 
 my $sms_send_config = C4::Context->config('sms_send_config');
-my $config_file = File::Spec->catfile($sms_send_config, 'LinkMobility/Driver.yaml');
+my $config_file = File::Spec->catfile($sms_send_config, 'MyLink/Driver.yaml');
 
 unless (-e $config_file) {
     plan skip_all => 'Configuration file not found in: '.$config_file;
