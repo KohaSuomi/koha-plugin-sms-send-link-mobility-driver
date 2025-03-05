@@ -2,6 +2,10 @@
 
 This plugin is for SMS::Send::LinkMobility::Driver
 
+# API documentation
+
+The API documentation can be found here https://developers.linkmobility.com/default/documentation/sms
+
 # Downloading
 
 From the release page you can download the latest \*.kpz file
@@ -42,12 +46,17 @@ Go to your plugin installation path and build the driver.
 
 The driver needs yaml configuration to work. Set your config file path to koha_conf.xml and create LinkMobility/Driver.yaml to that path.
 
-    user: foo
-    passwd: baa
+```yaml
+    client_id: foo
+    client_secret: baa
+    senderId: foobaa
     baseUrl: https://providerurl.service
-    sourceName: foofoo
-    requestEncoding: UTF-8
-    unicode: no
-    reportUrl: https://mykohaurl.fi/api/delivery
+    authUrl: https:://providerurl.service/auth/token
+    cacheKey: foo_baa_key
+    callbackAPIKey: fooooBAAAA
+    # these are optional, since the url can be defined on myLink portal
+    callbackURLs: 
+        - https://foobaa.fi/api/v1/callback
+```
 
 Set the LinkMobility::Driver to SMSSendDriver systempreference and enjoy.
