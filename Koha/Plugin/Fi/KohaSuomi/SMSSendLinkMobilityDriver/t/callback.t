@@ -36,7 +36,7 @@ subtest 'Check configuration file' => sub {
 };
 
 subtest 'callback API()' => sub {
-    plan tests => 19;
+    plan tests => 22;
 
     my $schema = Koha::Database->new->schema;
     $schema->storage->txn_begin;
@@ -89,6 +89,10 @@ subtest 'callback API()' => sub {
 
     ## Send a POST request to the callback API with the correct API key and a wrong message ID
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
+      ->status_is(200)
+      ->json_is('', '');
+
+    $t->get_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
       ->status_is(200)
       ->json_is('', '');
 
