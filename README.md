@@ -1,6 +1,6 @@
-# Koha-Suomi SMS::Send::LinkMobility::Driver
+# Koha-Suomi SMS::Send::MyLink::Driver
 
-This plugin is for SMS::Send::LinkMobility::Driver
+This plugin is for SMS::Send::MyLink::Driver. Old version is named LinkMobility::Driver and it will be deprecated in spring 2025.
 
 # API documentation
 
@@ -36,7 +36,7 @@ Once set up is complete you will need to alter your UseKohaPlugins system prefer
 
 Go to your plugin installation path and build the driver.
 
-    perl Build.PL
+    perl Build-MyLink.PL
     ./Build
     ./Build test
     ./Build install
@@ -44,7 +44,7 @@ Go to your plugin installation path and build the driver.
 
 # Configurations
 
-The driver needs yaml configuration to work. Set your config file path to koha_conf.xml and create LinkMobility/Driver.yaml to that path.
+The driver needs yaml configuration to work. Set your config file path to koha_conf.xml and create MyLink/Driver.yaml to that path.
 
 ```yaml
     client_id: foo
@@ -59,4 +59,4 @@ The driver needs yaml configuration to work. Set your config file path to koha_c
         - https://foobaa.fi/api/v1/callback
 ```
 
-Set the LinkMobility::Driver to SMSSendDriver systempreference and enjoy.
+Set the MyLink::Driver to SMSSendDriver systempreference and enjoy.
