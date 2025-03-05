@@ -49,7 +49,7 @@ The driver needs yaml configuration to work. Set your config file path to koha_c
 ```yaml
     client_id: foo
     client_secret: baa
-    senderId: foobaa
+    senderId: foobaa # This is shown to recipient, a shortnumber
     baseUrl: https://providerurl.service
     authUrl: https:://providerurl.service/auth/token
     cacheKey: foo_baa_key
