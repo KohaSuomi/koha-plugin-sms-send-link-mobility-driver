@@ -53,7 +53,7 @@
       - name: body
         in: body
         description: Callback data
-        required: true
+        required: false
         schema:
           type: object
     produces:
@@ -80,7 +80,7 @@
       - name: body
         in: body
         description: Callback data
-        required: true
+        required: false
         schema:
           type: object
     produces:

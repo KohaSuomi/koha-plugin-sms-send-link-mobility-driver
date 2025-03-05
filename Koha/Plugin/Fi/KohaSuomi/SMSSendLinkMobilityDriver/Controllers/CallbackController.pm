@@ -21,6 +21,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Try::Tiny;
 use Koha::Notice::Messages;
 use C4::Context;
+use YAML;
+use File::Spec;
 
 =head1 API
 
@@ -61,7 +63,7 @@ sub delivery {
     my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
     my $api_key = _get_api_key();
     if ($api_key && (!defined $api_key_header || $api_key_header ne $api_key)) {
-        return $c->render(status => 401, openapi => { error => "Unauthorized" });
+        return $c->render(status => 200, openapi => "Unauthorized");
     }
 
     try {
@@ -80,8 +82,9 @@ sub delivery {
         return $c->render(status => 200, openapi => "");
     }
     catch {
-        return $c->render( status  => 500,
-                           openapi => { error => "Internal server error" } );
+        my $error = $_;
+        $c->app->log->error($error);
+        return $c->render(status => 200, openapi => "");
     };
 
 }
