@@ -95,7 +95,7 @@ sub _error {
 
 sub _get_api_key {
     my $sms_send_config = C4::Context->config('sms_send_config');
-    my $config_file = File::Spec->catfile($sms_send_config, 'LinkMobility/Driver.yaml');
+    my $config_file = File::Spec->catfile($sms_send_config, 'MyLink/Driver.yaml');
     my $config = YAML::LoadFile($config_file);
     return $config->{callbackAPIKey};
 }
