@@ -78,6 +78,4 @@
     responses:
       200:
         description: Response for receiving the callback.
-        schema:
-          type: string
     
