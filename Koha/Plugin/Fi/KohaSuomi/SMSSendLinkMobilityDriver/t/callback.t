@@ -66,12 +66,12 @@ subtest 'callback API()' => sub {
 
     ## Send a POST request to the callback API with the API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => json => test_body({status => {code => 2000}}))
-      ->status_is(401)
-      ->json_is('/error', 'Unauthorized');
+      ->status_is(200)
+      ->json_is('', '');
     ## Send a POST request to the callback API with the wrong API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => "1234" } => json => test_body({status => {code => 2000}}))
-      ->status_is(401)
-      ->json_is('/error', 'Unauthorized');
+      ->status_is(200)
+      ->json_is('', '');
     ## Send a POST request to the callback API with the correct API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 2000}}))
       ->status_is(200)

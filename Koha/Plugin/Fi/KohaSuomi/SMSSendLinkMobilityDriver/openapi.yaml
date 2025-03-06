@@ -61,16 +61,6 @@
     responses:
       200:
         description: Response for receiving the callback.
-        schema:
-          type: string
-      401:
-        description: Unauthorized
-        schema:
-          type: object
-      500:
-        description: Internal error
-        schema:
-          type: object
   post:
     x-mojo-to: Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::CallbackController#delivery
     operationId: callbackLinkMobilityPost
@@ -90,12 +80,4 @@
         description: Response for receiving the callback.
         schema:
           type: string
-      401:
-        description: Unauthorized
-        schema:
-          type: object
-      500:
-        description: Internal error
-        schema:
-          type: object
     

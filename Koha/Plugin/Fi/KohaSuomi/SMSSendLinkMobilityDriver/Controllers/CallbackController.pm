@@ -63,29 +63,22 @@ sub delivery {
     my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
     my $api_key = _get_api_key();
     if ($api_key && (!defined $api_key_header || $api_key_header ne $api_key)) {
-        return $c->render(status => 200, openapi => "Unauthorized");
-    }
-
-    try {
-        my $body = $c->req->json;
-        my $status_code = $body->{status}->{code};
-        if (_error($status_code)) {
-            my $notice = Koha::Notice::Messages->find($body->{status}->{referenceId});
-            return $c->render( status  => 200,
-                               openapi => "" ) unless $notice;
-            $notice->set({
-                status        => 'failed',
-                failure_code => $body->{status}->{type},
-            })->store;
-        }
-
         return $c->render(status => 200, openapi => "");
     }
-    catch {
-        my $error = $_;
-        $c->app->log->error($error);
-        return $c->render(status => 200, openapi => "");
-    };
+
+    my $body = $c->req->json;
+    my $status_code = $body->{status}->{code};
+    if (_error($status_code)) {
+        my $notice = Koha::Notice::Messages->find($body->{status}->{referenceId});
+        return $c->render( status  => 200,
+                            openapi => "" ) unless $notice;
+        $notice->set({
+            status        => 'failed',
+            failure_code => $body->{status}->{type},
+        })->store;
+    }
+
+    return $c->render(status => 200, openapi => "");
 
 }
 
