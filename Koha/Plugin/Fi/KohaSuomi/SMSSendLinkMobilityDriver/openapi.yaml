@@ -44,23 +44,6 @@
         schema:
           type: object
 /notices/callback/linkmobility:
-  get:
-    x-mojo-to: Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::CallbackController#delivery
-    operationId: callbackLinkMobilityGet
-    tags:
-      - Notices
-    parameters:
-      - name: body
-        in: body
-        description: Callback data
-        required: false
-        schema:
-          type: object
-    produces:
-      - application/json
-    responses:
-      200:
-        description: Response for receiving the callback.
   post:
     x-mojo-to: Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::CallbackController#delivery
     operationId: callbackLinkMobilityPost
