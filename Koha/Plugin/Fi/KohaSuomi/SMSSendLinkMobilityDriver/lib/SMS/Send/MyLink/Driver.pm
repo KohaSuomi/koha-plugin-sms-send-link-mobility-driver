@@ -170,7 +170,7 @@ sub send_sms {
     };
 
     if ($params->{_message_id}) {
-        $reqparams->{referenceId} = $params->{_message_id};
+        $reqparams->{referenceId} = "$params->{_message_id}";
     }
 
     if ($params->{_callbackAPIKey}) {
