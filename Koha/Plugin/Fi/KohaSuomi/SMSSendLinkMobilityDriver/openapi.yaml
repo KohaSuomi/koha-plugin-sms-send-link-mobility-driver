@@ -49,13 +49,6 @@
     operationId: callbackLinkMobilityPost
     tags:
       - Notices
-    parameters:
-      - name: body
-        in: body
-        description: Callback data
-        required: false
-        schema:
-          type: object
     produces:
       - application/json
     responses:
