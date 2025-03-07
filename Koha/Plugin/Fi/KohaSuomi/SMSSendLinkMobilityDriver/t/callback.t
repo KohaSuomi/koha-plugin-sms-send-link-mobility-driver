@@ -30,7 +30,7 @@ subtest 'Check configuration file' => sub {
     plan tests => 4;
 
     ok(defined $config, 'Config file is defined');
-    ok(defined $config->{callbackAPIKey}, 'Callback API key is defined');
+    ok(defined $config->{callbackToken}, 'Callback Token is defined');
     ok(defined $config->{callbackURLs}, 'Callback URLs are defined');
     ok(ref $config->{callbackURLs} eq 'ARRAY', 'Callback URLs is an array');
 };
@@ -62,20 +62,20 @@ subtest 'callback API()' => sub {
     my $message_id = C4::Letters::EnqueueLetter($my_message);
     ok(defined $message_id && $message_id > 0, 'Message enqueued');
 
-    my $api_key = $config->{callbackAPIKey};
+    my $api_token = $config->{callbackToken};
 
     ## Send a POST request to the callback API with the API key
-    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => json => test_body({status => {code => 2000}}))
+    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility/44556" => json => test_body({status => {code => 2000}}))
       ->status_is(200);
     ## Send a POST request to the callback API with the wrong API key
-    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => "1234" } => json => test_body({status => {code => 2000}}))
+    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility/".$api_token => json => test_body({status => {code => 2000}}))
       ->status_is(200);
     ## Send a POST request to the callback API with the correct API key
-    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 2000}}))
+    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility/".$api_token => json => test_body({status => {code => 2000}}))
       ->status_is(200);
 
     ## Send a POST request to the callback API with the correct API key and a message that failed
-    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id}}))
+    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility/".$api_token => json => test_body({status => {code => 3000, referenceId => $message_id}}))
       ->status_is(200);
 
     my $notice = Koha::Notice::Messages->find($message_id);
@@ -84,7 +84,7 @@ subtest 'callback API()' => sub {
     is($notice->failure_code, 'string', 'Failure code is string');
 
     ## Send a POST request to the callback API with the correct API key and a wrong message ID
-    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
+    $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility/".$api_token => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
       ->status_is(200);
 
     $schema->storage->txn_rollback;

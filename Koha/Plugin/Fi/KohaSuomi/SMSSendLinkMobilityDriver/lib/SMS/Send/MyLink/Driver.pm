@@ -66,7 +66,6 @@ sub new {
         $self->{_senderId} = $params->{_senderId};
         $self->{_reportUrl} = $params->{_reportUrl};
         $self->{_cacheKey} = $params->{_cacheKey};
-        $self->{_callbackAPIKey} = $params->{_callbackAPIKey};
         $self->{_callbackURLs} = $params->{_callbackURLs};
 
         return $self;
@@ -125,7 +124,6 @@ sub send_sms {
     $senderId = "$senderId" if $senderId =~ /^\d+$/; #SenderId must be a string
     my $cacheKey = $self->{_cacheKey};
     my $callbackURLs = $self->{_callbackURLs};
-    my $callbackAPIKey = $self->{_callbackAPIKey};
 
     if (! defined $message ) {
         warn "->send_sms(text) must be defined!";
@@ -169,22 +167,17 @@ sub send_sms {
     my $reqparams = {
         recipient => $recipientNumber,
         content => {text => hdiacritic($message), options => {'sms.sender' => $senderId, 'sms.encoding' => 'AutoDetect', 'sms.obfuscate' => 'ContentAndRecipient'} },
-        priority => 'Normal',
-        callback => {mode => 'None'}
+        priority => 'Normal'
     };
 
     if ($params->{_message_id}) {
         $reqparams->{referenceId} = "$params->{_message_id}";
     }
     
-    if ($callbackAPIKey) {
-        if ($callbackURLs) {
-            $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
-        } else {
-            $reqparams->{callback} = {mode => 'Profile'};
-        }
+    if ($callbackURLs) {
+        $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
     }
-    
+
     ($error, $res) = _rest_call($url, $headers, undef, [$reqparams]);
     
     if ($error) {

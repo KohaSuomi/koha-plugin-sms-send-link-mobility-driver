@@ -43,14 +43,20 @@
         description: Internal error
         schema:
           type: object
-/notices/callback/linkmobility:
+/notices/callback/linkmobility/{token}:
   post:
     x-mojo-to: Fi::KohaSuomi::SMSSendLinkMobilityDriver::Controllers::CallbackController#delivery
-    operationId: callbackLinkMobilityPost
+    operationId: callbackLinkMobility
     tags:
       - Notices
     produces:
       - application/json
+    parameters:
+      - name: token
+        in: path
+        description: Identifier
+        required: true
+        type: string
     responses:
       200:
         description: Response for receiving the callback.

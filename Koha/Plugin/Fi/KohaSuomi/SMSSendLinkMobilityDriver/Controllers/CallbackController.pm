@@ -63,10 +63,9 @@ sub delivery {
     my $c = shift->openapi->valid_input or return;
 
     my $logger = _get_logger();
-    # Check if the API key is correct
-    my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
-    my $api_key = _get_api_key();
-    if ($api_key && (!defined $api_key_header || $api_key_header ne $api_key)) {
+    my $token = $c->param('token');
+    if ($token ne _get_config_token()) {
+        $logger->error("Unauthorized callback received with body: " . Dumper($c->req->json));
         return $c->render(status => 200, text => '');
     }
 
@@ -102,11 +101,11 @@ sub _error {
     return 0;
 }
 
-sub _get_api_key {
+sub _get_config_token {
     my $sms_send_config = C4::Context->config('sms_send_config');
     my $config_file = File::Spec->catfile($sms_send_config, 'MyLink/Driver.yaml');
     my $config = YAML::LoadFile($config_file);
-    return $config->{callbackAPIKey};
+    return $config->{callbackToken};
 }
 
 =head1
