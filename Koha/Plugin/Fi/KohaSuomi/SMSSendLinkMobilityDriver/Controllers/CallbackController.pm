@@ -23,6 +23,9 @@ use Koha::Notice::Messages;
 use C4::Context;
 use YAML;
 use File::Spec;
+use Log::Log4perl;
+use Data::Dumper;
+use File::Basename;
 
 =head1 API
 
@@ -59,6 +62,7 @@ use File::Spec;
 sub delivery {
     my $c = shift->openapi->valid_input or return;
 
+    my $logger = _get_logger();
     # Check if the API key is correct
     my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
     my $api_key = _get_api_key();
@@ -68,6 +72,7 @@ sub delivery {
 
     my $req = $c->req->json;
     foreach my $body (@{$req}) {
+        $logger->info("Callback received: " . Dumper($body));
         _handle_callback($body);
     }
 
@@ -102,6 +107,31 @@ sub _get_api_key {
     my $config_file = File::Spec->catfile($sms_send_config, 'MyLink/Driver.yaml');
     my $config = YAML::LoadFile($config_file);
     return $config->{callbackAPIKey};
+}
+
+=head1
+
+Logger initialization
+
+log4perl.logger.mylink = INFO, MYLINK
+log4perl.appender.MYLINK=Log::Log4perl::Appender::File
+log4perl.appender.MYLINK.filename=<path>/mylink.log
+log4perl.appender.MYLINK.mode=append
+log4perl.appender.MYLINK.create_at_logtime=true
+log4perl.appender.MYLINK.layout=PatternLayout
+log4perl.appender.MYLINK.layout.ConversionPattern=[%d] [%p] %m%n
+log4perl.appender.MYLINK.utf8=1
+log4perl.appender.MYLINK.umask=0007
+log4perl.appender.MYLINK.owner=www-data
+log4perl.appender.MYLINK.group=www-data
+
+=cut
+
+sub _get_logger {
+    my $CONFPATH = dirname($ENV{'KOHA_CONF'});
+    my $log_conf = $CONFPATH . "/log4perl.conf";
+    Log::Log4perl::init($log_conf);
+    return Log::Log4perl->get_logger('mylink');
 }
 
 1;
