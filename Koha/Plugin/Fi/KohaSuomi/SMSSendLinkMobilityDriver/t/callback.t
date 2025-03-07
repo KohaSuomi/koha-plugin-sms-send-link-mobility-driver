@@ -36,7 +36,7 @@ subtest 'Check configuration file' => sub {
 };
 
 subtest 'callback API()' => sub {
-    plan tests => 15;
+    plan tests => 14;
 
     my $schema = Koha::Database->new->schema;
     $schema->storage->txn_begin;
