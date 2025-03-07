@@ -66,6 +66,8 @@ sub new {
         $self->{_senderId} = $params->{_senderId};
         $self->{_reportUrl} = $params->{_reportUrl};
         $self->{_cacheKey} = $params->{_cacheKey};
+        $self->{_callbackAPIKey} = $params->{_callbackAPIKey};
+        $self->{_callbackURLs} = $params->{_callbackURLs};
 
         return $self;
 }
