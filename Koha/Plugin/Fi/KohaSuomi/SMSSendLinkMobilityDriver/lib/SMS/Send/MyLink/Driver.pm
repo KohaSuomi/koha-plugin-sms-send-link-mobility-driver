@@ -124,6 +124,8 @@ sub send_sms {
     my $senderId = $self->{_senderId};
     $senderId = "$senderId" if $senderId =~ /^\d+$/; #SenderId must be a string
     my $cacheKey = $self->{_cacheKey};
+    my $callbackURLs = $self->{_callbackURLs};
+    my $callbackAPIKey = $self->{_callbackAPIKey};
 
     if (! defined $message ) {
         warn "->send_sms(text) must be defined!";
@@ -174,13 +176,13 @@ sub send_sms {
     if ($params->{_message_id}) {
         $reqparams->{referenceId} = "$params->{_message_id}";
     }
-
-    if ($params->{_callbackAPIKey}) {
-        $reqparams->{callback} = {mode => 'Profile'};
-    }
-
-    if ($params->{_callbackAPIKey} && $params->{_callbackURLs}) {
-        $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
+    
+    if ($callbackAPIKey) {
+        if ($callbackURLs) {
+            $reqparams->{callback} = {urls => $callbackURLs, mode => 'URL'};
+        } else {
+            $reqparams->{callback} = {mode => 'Profile'};
+        }
     }
     
     ($error, $res) = _rest_call($url, $headers, undef, [$reqparams]);
