@@ -30,9 +30,9 @@ use File::Spec;
 
 =head2 callback example
 
-    This is the callback example found in the Link Mobility API documentation
+    This is the callback example found in the Link Mobility API documentation. Despite the documentation the body is an array of objects.
 
-    {
+    [{
         "eventId": "d6703cc8-9e79-415d-ac03-a4dc7f6ab43c",
         "channel": "sms",
         "recipient": "string",
@@ -52,7 +52,7 @@ use File::Spec;
             "details": "string",
             "operator": "string"
         }
-    }
+    }]
 
 =cut
 
@@ -63,22 +63,31 @@ sub delivery {
     my $api_key_header = $c->req->headers->header('X-KOHA-LINK');
     my $api_key = _get_api_key();
     if ($api_key && (!defined $api_key_header || $api_key_header ne $api_key)) {
-        return $c->render(status => 200, text => '200');
+        return $c->render(status => 200, text => '');
     }
 
-    my $body = $c->req->json;
+    my $req = $c->req->json;
+    foreach my $body (@{$req}) {
+        _handle_callback($body);
+    }
+
+    return $c->render(status => 200, text => '');
+
+}
+
+sub _handle_callback {
+    my ($body) = @_;
+
+    my $notice = Koha::Notice::Messages->find($body->{status}->{referenceId});
+    return unless $notice;
+
     my $status_code = $body->{status}->{code};
     if (_error($status_code)) {
-        my $notice = Koha::Notice::Messages->find($body->{status}->{referenceId});
-        return $c->render( status  => 200, text => '200') unless $notice;
         $notice->set({
             status        => 'failed',
-            failure_code => $body->{status}->{type},
+            failure_code => $body->{status}->{details},
         })->store;
     }
-
-    return $c->render(status => 200, text => '200');
-
 }
 
 sub _error {

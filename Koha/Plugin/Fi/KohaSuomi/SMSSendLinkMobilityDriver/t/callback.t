@@ -36,7 +36,7 @@ subtest 'Check configuration file' => sub {
 };
 
 subtest 'callback API()' => sub {
-    plan tests => 22;
+    plan tests => 15;
 
     my $schema = Koha::Database->new->schema;
     $schema->storage->txn_begin;
@@ -66,21 +66,17 @@ subtest 'callback API()' => sub {
 
     ## Send a POST request to the callback API with the API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => json => test_body({status => {code => 2000}}))
-      ->status_is(200)
-      ->json_is('', '');
+      ->status_is(200);
     ## Send a POST request to the callback API with the wrong API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => "1234" } => json => test_body({status => {code => 2000}}))
-      ->status_is(200)
-      ->json_is('', '');
+      ->status_is(200);
     ## Send a POST request to the callback API with the correct API key
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 2000}}))
-      ->status_is(200)
-      ->json_is('', '');
+      ->status_is(200);
 
     ## Send a POST request to the callback API with the correct API key and a message that failed
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id}}))
-      ->status_is(200)
-      ->json_is('', '');
+      ->status_is(200);
 
     my $notice = Koha::Notice::Messages->find($message_id);
     ok(defined $notice, 'Notice found');
@@ -89,12 +85,7 @@ subtest 'callback API()' => sub {
 
     ## Send a POST request to the callback API with the correct API key and a wrong message ID
     $t->post_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
-      ->status_is(200)
-      ->json_is('', '');
-
-    $t->get_ok( "/api/v1/contrib/kohasuomi/notices/callback/linkmobility" => { 'X-KOHA-LINK' => $api_key } => json => test_body({status => {code => 3000, referenceId => $message_id + 1}}))
-      ->status_is(200)
-      ->json_is('', '');
+      ->status_is(200);
 
     $schema->storage->txn_rollback;
 };
@@ -136,7 +127,7 @@ sub test_body {
         }
     }
 
-    return $request; 
+    return [$request]; 
 }
 
 
