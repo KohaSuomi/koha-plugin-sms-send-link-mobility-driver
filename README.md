@@ -53,7 +53,7 @@ The driver needs yaml configuration to work. Set your config file path to koha_c
     baseUrl: https://providerurl.service
     authUrl: https:://providerurl.service/auth/token
     cacheKey: foo_baa_key
-    callbackAPIKey: fooooBAAAA
+    callbackToken: fooooBAAAA
     # these are optional, since the url can be defined on myLink portal
     callbackURLs: 
         - https://foobaa.fi/api/v1/callback
