@@ -152,7 +152,7 @@ sub send_sms {
             die "Connection failed with: ". $error->{message};
             return;
         }
-        $cache->set_in_cache($cacheKey, $res, { expiry => $res->{expires_in} - 5 });
+        $cache->set_in_cache($cacheKey, $res, { expiry => $res->{expires_in} - 60 });
         $accessToken = $res->{access_token};
         $tokenType = $res->{token_type};
     }
