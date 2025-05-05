@@ -24,7 +24,7 @@ our $metadata = {
     minimum_version => '17.05.00.000',
     maximum_version => undef,
     version         => $VERSION,
-    description     => 'Send SMS messages to LinkMobility interface',
+    description     => 'Send SMS messages to LinkMobility interface. (Paikalliskannat, jos LinkMobility käytössä)',
 };
 
 ## This is the minimum code required for a plugin's 'new' method
