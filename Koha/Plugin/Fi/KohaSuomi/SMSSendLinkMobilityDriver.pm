@@ -27,6 +27,25 @@ our $metadata = {
     description     => 'Send SMS messages to LinkMobility interface. (Paikalliskannat, jos LinkMobility käytössä)',
 };
 
+sub get_localized_metadata {
+    my ($self) = @_;
+    my $lang = C4::Languages::getlanguage() || 'en';
+    my ($name, $description);
+
+    if ($lang eq 'sv-SE') {
+        $name = "SMS::Send::LinkMobility::Driver";
+        $description = "Skicka SMS-meddelanden till LinkMobility-gränssnittet. (Lokala databaser, om LinkMobility används)";
+    
+    } elsif ($lang eq 'fi-FI' ) {
+        $name = "SMS::Send::LinkMobility::Driver";
+        $description = "Lähetä SMS-viestejä LinkMobility-liittymään. (Paikalliskannat, jos LinkMobility käytössä)";
+    } else {
+        $name = "SMS::Send::LinkMobility::Driver";
+        $description = "Send SMS messages to LinkMobility interface. (Local databases, if LinkMobility is used)";
+    }
+    return ($name, $description);
+}
+
 ## This is the minimum code required for a plugin's 'new' method
 ## More can be added, but none should be removed
 sub new {
@@ -40,6 +59,10 @@ sub new {
     ## This runs some additional magic and checking
     ## and returns our actual $self
     my $self = $class->SUPER::new($args);
+
+    my ($name, $description) = $self->get_localized_metadata();
+    $self->{'metadata'}->{'name'} = $name;
+    $self->{'metadata'}->{'description'} = $description;
 
     return $self;
 }
